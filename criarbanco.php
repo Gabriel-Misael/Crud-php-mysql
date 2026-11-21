@@ -10,25 +10,25 @@
 
     <?php
 
-        require_once "config.php";
+    require_once "config.php";
 
+    try {
+        // Conecta só no servidor (sem dbname), pois o banco ainda pode não existir
+        $conexao = new PDO("mysql:host=$servidor", $usuario, $senha);
+        $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-      try {
-          $conexao = new PDO("mysql:host=$servidor;dbname=$db", $usuario, $senha);
-          $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $conexao->exec("CREATE DATABASE IF NOT EXISTS $db");
+        echo "Banco de dados criado com sucesso (ou já existia).
+        <br><hr><a href='criartabela.php'>Criar tabela</a>";
+    } 
+    catch (PDOException $e) {
+        echo "Não foi possível criar o banco de dados.<br>" . $e->getMessage();
+    }
 
-            $conexao->exec("CREATE DATABASE livraria");
-            echo "banco de dados criado com sucesso";
-
-      } 
-          catch (PDOException $e) {
-            echo "não foi possivel criar o banco de dados";
-            $e->getMessage();
-      }
-
-      $conexao = null;
+    $conexao = null;
 
     ?>
 
 </body>
+
 </html>
